@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Device Audit — Diagnostik & Verifikasi Perangkat</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .font-mono-tech { font-family: 'JetBrains Mono', monospace; }
+    @media print {
+      .no-print { display: none !important; }
+      body { background: white !important; }
+      #view-workspace { display: block !important; padding: 0 !important; }
+      #panel-report { display: block !important; border: none !important; box-shadow: none !important; padding: 0 !important; }
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col">
+
+  <!-- ========================================== -->
+  <!-- HEADER NAVIGASI UTAMA                      -->
+  <!-- ========================================== -->
+  <header class="no-print sticky top-0 z-40 bg-white border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
+      
+      <!-- Logo -->
+      <div class="flex items-center gap-2.5 cursor-pointer shrink-0" onclick="gantiTampilanUtama('home')">
+        <div class="w-8 h-8 bg-slate-900 rounded-lg flex items-center justify-center text-blue-400">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        </div>
+        <div>
+          <span class="text-base font-bold tracking-tight text-slate-900">Device<span class="text-blue-600">Audit</span></span>
+          <span class="hidden md:inline-block text-[10px] font-mono-tech bg-slate-100 text-slate-600 px-2 py-0.5 rounded ml-1.5 border border-slate-200">SUITE</span>
+        </div>
+      </div>
+
+      <!-- Navigasi Tengah: Menu Utama, Ruang Uji, Riwayat -->
+      <nav class="flex items-center bg-slate-100 p-1 rounded-lg text-xs font-semibold">
+        <button id="nav-btn-home" onclick="gantiTampilanUtama('home')" class="px-3 py-1.5 rounded-md bg-white text-slate-900 shadow-sm transition">
+          Menu Utama
+        </button>
+        <button id="nav-btn-workspace" onclick="gantiTampilanUtama('workspace')" class="px-3 py-1.5 rounded-md text-slate-600 hover:text-slate-900 transition">
+          Ruang Uji
+        </button>
+        <button id="nav-btn-history" onclick="gantiTampilanUtama('history')" class="px-3 py-1.5 rounded-md text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5">
+          Riwayat
+          <span id="badge-history-count" class="bg-slate-200 text-slate-700 text-[10px] px-1.5 py-0.2 rounded-full">0</span>
+        </button>
+      </nav>
+
+      <!-- Area Sesi Auth -->
+      <div class="flex items-center gap-3">
+        <div id="menu-tamu">
+          <a href="login.html" class="bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold px-3.5 py-2 rounded-lg transition">
+            Masuk
+          </a>
+        </div>
+        <div id="menu-user" class="hidden flex items-center gap-2.5">
+          <div class="text-right hidden sm:block leading-tight">
+            <span id="user-nama" class="block text-xs font-bold text-slate-800">Nama</span>
+            <span id="user-email" class="block text-[10px] text-slate-500 font-medium">email@domain.com</span>
+          </div>
+          <div id="user-avatar" class="w-8 h-8 rounded-full bg-slate-900 text-white flex items-center justify-center text-xs font-bold">U</div>
+          <button onclick="logoutUser()" class="text-[11px] font-semibold text-rose-600 hover:bg-rose-50 px-2.5 py-1.5 rounded-lg border border-rose-200 transition">Keluar</button>
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ========================================== -->
+  <!-- TAMPILAN 0: MENU UTAMA (BERANDA ALAT)      -->
+  <!-- ========================================== -->
+  <main id="view-home" class="no-print max-w-6xl mx-auto px-4 py-8 w-full flex-1 space-y-8">
+    
+    <!-- Kartu Pengenalan & Persiapan Audit Terpadu -->
+    <section class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+      <div class="lg:col-span-6 space-y-3">
+        <span class="inline-block text-[11px] font-mono-tech font-semibold text-blue-700 bg-blue-50 border border-blue-200 px-2.5 py-1 rounded-md">
+          VERIFIKASI HARDWARE BERBASIS BROWSER
+        </span>
+        <h1 class="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight leading-snug">
+          Periksa Kelayakan Perangkat Secara Terpadu dalam Satu Ruang Kerja
+        </h1>
+        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+          Alat diagnostik terpusat untuk menguji layar, keyboard, perangkat penunjuk, sistem audio, webcam, informasi baterai, dan kondisi fisik sebelum membeli unit bekas, pasca-servis, maupun pengecekan berkala.
+        </p>
+      </div>
+
+      <!-- Form Setup Audit Baru -->
+      <div class="lg:col-span-6 bg-slate-50 p-5 rounded-xl border border-slate-200 space-y-4">
+        <div class="space-y-1">
+          <label class="block text-xs font-bold text-slate-700">Nama / Seri Perangkat</label>
+          <input type="text" id="home-device-name" placeholder="Contoh: ThinkPad T480 / Mouse Logitech G102" 
+                 class="w-full text-xs px-3 py-2.5 bg-white border border-slate-300 rounded-lg focus:border-blue-600 focus:outline-none">
+        </div>
+
+        <div class="space-y-1.5">
+          <label class="block text-xs font-bold text-slate-700">Label Pengujian (Untuk Pengelompokan Riwayat)</label>
+          <input type="text" id="home-audit-label" placeholder="Ketik label bebas (misal: COD OLX, Pasca Servis, Cek Harian)..." 
+                 class="w-full text-xs px-3 py-2.5 bg-white border border-slate-300 rounded-lg focus:border-blue-600 focus:outline-none">
+          <!-- Saran Label Cepat -->
+          <div class="flex flex-wrap gap-1.5 pt-1">
+            <button type="button" onclick="setLabelCepat('Beli Bekas (COD)')" class="text-[10px] bg-white hover:bg-blue-50 text-slate-600 hover:text-blue-700 border border-slate-200 px-2 py-1 rounded-md transition">Beli Bekas (COD)</button>
+            <button type="button" onclick="setLabelCepat('Pasca-Servis')" class="text-[10px] bg-white hover:bg-blue-50 text-slate-600 hover:text-blue-700 border border-slate-200 px-2 py-1 rounded-md transition">Pasca-Servis</button>
+            <button type="button" onclick="setLabelCepat('Pengecekan Rutin')" class="text-[10px] bg-white hover:bg-blue-50 text-slate-600 hover:text-blue-700 border border-slate-200 px-2 py-1 rounded-md transition">Pengecekan Rutin</button>
+            <button type="button" onclick="setLabelCepat('Pra-Jual Unit')" class="text-[10px] bg-white hover:bg-blue-50 text-slate-600 hover:text-blue-700 border border-slate-200 px-2 py-1 rounded-md transition">Pra-Jual Unit</button>
+          </div>
+        </div>
+
+        <button onclick="mulaiAuditDariHome('display')" class="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl shadow-sm transition flex items-center justify-center gap-2">
+          <span>Mulai Rangkaian Audit Penuh (7 Modul)</span>
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- Grid Akses Cepat Modul Satuan -->
+    <section class="space-y-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-sm font-bold text-slate-900">Atau Pilih Uji Komponen Tertentu Secara Langsung</h2>
+          <p class="text-xs text-slate-500">Klik kartu di bawah untuk langsung membuka alat diagnostik yang dibutuhkan.</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Card 1: Display -->
+        <button onclick="mulaiAuditDariHome('display')" class="bg-white p-5 rounded-xl border border-slate-200 hover:border-blue-500 hover:shadow-md transition text-left space-y-2 group">
+          <div class="w-9 h-9 rounded-lg bg-slate-100 group-hover:bg-blue-50 text-slate-700 group-hover:text-blue-600 flex items-center justify-center transition">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          </div>
+          <h3 class="font-bold text-xs text-slate-900">1. Layar & Dead Pixel</h3>
+          <p class="text-[11px] text-slate-500 leading-relaxed">Uji warna solid layar penuh untuk mendeteksi piksel mati dan backlight bleed.</p>
+        </button>
+
+        <!-- Card 2: Keyboard -->
+        <button onclick="mulaiAuditDariHome('keyboard')" class="bg-white p-5 rounded-xl border border-slate-200 hover:border-blue-500 hover:shadow-md transition text-left space-y-2 group">
+          <div class="w-9 h-9 rounded-lg bg-slate-100 group-hover:bg-blue-50 text-slate-700 group-hover:text-blue-600 flex items-center justify-center transition">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+          </div>
+          <h3 class="font-bold text-xs text-slate-900">2. Matriks Keyboard</h3>
+          <p class="text-[11px] text-slate-500 leading-relaxed">Deteksi tombol macet atau mati melalui matriks visual QWERTY interaktif.</p>
+        </button>
+
+        <!-- Card 3: Mouse & Touchpad (BARU) -->
+        <button onclick="mulaiAuditDariHome('pointer')" class="bg-white p-5 rounded-xl border border-slate-200 hover:border-blue-500 hover:shadow-md transition text-left space-y-2 group">
+          <div class="w-9 h-9 rounded-lg bg-slate-100 group-hover:bg-blue-50 text-slate-700 group-hover:text-blue-600 flex items-center justify-center transition">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"/></svg>
+          </div>
+          <h3 class="font-bold text-xs text-slate-900">3. Mouse, Touchpad & Scroll</h3>
+          <p class="text-[11px] text-slate-500 leading-relaxed">Uji klik kiri/tengah/kanan, roda scroll, dan kanvas kelancaran kursor touchpad.</p>
+        </button>
+
+        <!-- Card 4: Audio & Mic -->
+        <button onclick="mulaiAuditDariHome('audio')" class="bg-white p-5 rounded-xl border border-slate-200 hover:border-blue-500 hover:shadow-md transition text-left space-y-2 group">
+          <div class="w-9 h-9 rounded-lg bg-slate-100 group-hover:bg-blue-50 text-slate-700 group-hover:text-blue-600 flex items-center justify-center transition">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/></svg>
+          </div>
+          <h3 class="font-bold text-xs text-slate-900">4. Speaker & Mikrofon</h3>
+          <p class="text-[11px] text-slate-500 leading-relaxed">Uji keseimbangan audio L/R stereo dan meteran sinyal mikrofon secara langsung.</p>
+        </button>
+
+        <!-- Card 5: Webcam -->
+        <button onclick="mulaiAuditDariHome('camera')" class="bg-white p-5 rounded-xl border border-slate-200 hover:border-blue-500 hover:shadow-md transition text-left space-y-2 group">
+          <div class="w-9 h-9 rounded-lg bg-slate-100 group-hover:bg-blue-50 text-slate-700 group-hover:text-blue-600 flex items-center justify-center transition">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+          </div>
+          <h3 class="font-bold text-xs text-slate-900">5. Kamera (Webcam)</h3>
+          <p class="text-[11px] text-slate-500 leading-relaxed">Pratinjau kejernihan optik kamera sekaligus membaca resolusi aktif sensor.</p>
+        </button>
+
+        <!-- Card 6: System & Battery (BARU) -->
+        <button onclick="mulaiAuditDariHome('system')" class="bg-white p-5 rounded-xl border border-slate-200 hover:border-blue-500 hover:shadow-md transition text-left space-y-2 group">
+          <div class="w-9 h-9 rounded-lg bg-slate-100 group-hover:bg-blue-50 text-slate-700 group-hover:text-blue-600 flex items-center justify-center transition">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/></svg>
+          </div>
+          <h3 class="font-bold text-xs text-slate-900">6. Info Sistem & Baterai</h3>
+          <p class="text-[11px] text-slate-500 leading-relaxed">Deteksi otomatis inti CPU, estimasi RAM, resolusi DPI layar, dan status baterai.</p>
+        </button>
+
+        <!-- Card 7: Physical -->
+        <button onclick="mulaiAuditDariHome('physical')" class="bg-white p-5 rounded-xl border border-slate-200 hover:border-blue-500 hover:shadow-md transition text-left space-y-2 group">
+          <div class="w-9 h-9 rounded-lg bg-slate-100 group-hover:bg-blue-50 text-slate-700 group-hover:text-blue-600 flex items-center justify-center transition">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+          </div>
+          <h3 class="font-bold text-xs text-slate-900">7. Inspeksi Fisik & Port</h3>
+          <p class="text-[11px] text-slate-500 leading-relaxed">Checklist kondisi engsel, casing, baut, port USB/HDMI, dan poin fisik kustom.</p>
+        </button>
+
+        <!-- Card 8: Report -->
+        <button onclick="mulaiAuditDariHome('report')" class="bg-slate-900 text-white p-5 rounded-xl border border-slate-800 hover:bg-slate-800 transition text-left space-y-2">
+          <div class="w-9 h-9 rounded-lg bg-white/10 text-blue-400 flex items-center justify-center">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          </div>
+          <h3 class="font-bold text-xs">Ringkasan Laporan</h3>
+          <p class="text-[11px] text-slate-300 leading-relaxed">Lihat skor kelayakan, simpan ke riwayat akun, atau cetak sertifikat PDF.</p>
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========================================== -->
+  <!-- TAMPILAN 1: RUANG KERJA AUDIT              -->
+  <!-- ========================================== -->
+  <main id="view-workspace" class="hidden max-w-7xl mx-auto px-4 py-6 w-full flex-1 space-y-6">
+    
+    <!-- Baris Identitas Perangkat, Label Fleksibel, & Progres -->
+    <div id="workspace-top-bar" class="no-print bg-white p-4 sm:p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div class="flex-1 flex flex-col sm:flex-row sm:items-center gap-3">
+        <div class="flex-1 max-w-xs">
+          <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Perangkat Diuji</label>
+          <input type="text" id="input-device-name" placeholder="Nama / Seri Perangkat" 
+                 class="w-full text-xs font-medium px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg focus:bg-white focus:border-blue-600 focus:outline-none">
+        </div>
+        <div class="flex-1 max-w-xs">
+          <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Label Riwayat</label>
+          <input type="text" id="input-audit-label" placeholder="Contoh: COD OLX, Cek Rutin..." 
+                 class="w-full text-xs font-medium px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg focus:bg-white focus:border-blue-600 focus:outline-none">
+        </div>
+      </div>
+
+      <!-- Indikator Progres -->
+      <div class="w-full md:w-64 space-y-1.5">
+        <div class="flex justify-between text-xs font-semibold">
+          <span class="text-slate-600">Progres Pengujian</span>
+          <span id="progress-text" class="text-blue-600 font-mono-tech">0 / 7 Modul</span>
+        </div>
+        <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+          <div id="progress-bar" class="h-full bg-blue-600 transition-all duration-300" style="width: 0%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Layout 2 Kolom: Sidebar Stepper & Panel Pengujian Aktif -->
+    <div class="flex flex-col lg:flex-row gap-6 items-start">
+
+      <!-- SIDEBAR LANGKAH PENGUJIAN (7 MODUL) -->
+      <aside id="workspace-sidebar" class="no-print w-full lg:w-64 shrink-0 bg-white rounded-xl border border-slate-200 shadow-sm p-2.5 space-y-1">
+        <div class="px-3 py-2 text-[11px] font-bold text-slate-400 uppercase tracking-wider">Modul Diagnostik</div>
+        
+        <button onclick="bukaModul('display')" id="step-display" class="step-btn w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-semibold transition text-left">
+          <span class="flex items-center gap-2"><span class="w-5 h-5 rounded bg-slate-100 text-slate-600 flex items-center justify-center text-[10px] font-bold">1</span> Layar & Piksel</span>
+          <span id="badge-display" class="w-2.5 h-2.5 rounded-full bg-slate-300"></span>
+        </button>
+
+        <button onclick="bukaModul('keyboard')" id="step-keyboard" class="step-btn w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-semibold transition text-left">
+          <span class="flex items-center gap-2"><span class="w-5 h-5 rounded bg-slate-100 text-slate-600 flex items-center justify-center text-[10px] font-bold">2</span> Matriks Keyboard</span>
+          <span id="badge-keyboard" class="w-2.5 h-2.5 rounded-full bg-slate-300"></span>
+        </button>
+
+        <button onclick="bukaModul('pointer')" id="step-pointer" class="step-btn w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-semibold transition text-left">
+          <span class="flex items-center gap-2"><span class="w-5 h-5 rounded bg-slate-100 text-slate-600 flex items-center justify-center text-[10px] font-bold">3</span> Mouse & Touchpad</span>
+          <span id="badge-pointer" class="w-2.5 h-2.5 rounded-full bg-slate-300"></span>
+        </button>
+
+        <button onclick="bukaModul('audio')" id="step-audio" class="step-btn w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-semibold transition text-left">
+          <span class="flex items-center gap-2"><span class="w-5 h-5 rounded bg-slate-100 text-slate-600 flex items-center justify-center text-[10px] font-bold">4</span> Speaker & Mic</span>
+          <span id="badge-audio" class="w-2.5 h-2.5 rounded-full bg-slate-300"></span>
+        </button>
+
+        <button onclick="bukaModul('camera')" id="step-camera" class="step-btn w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-semibold transition text-left">
+          <span class="flex items-center gap-2"><span class="w-5 h-5 rounded bg-slate-100 text-slate-600 flex items-center justify-center text-[10px] font-bold">5</span> Kamera (Webcam)</span>
+          <span id="badge-camera" class="w-2.5 h-2.5 rounded-full bg-slate-300"></span>
+        </button>
+
+        <button onclick="bukaModul('system')" id="step-system" class="step-btn w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-semibold transition text-left">
+          <span class="flex items-center gap-2"><span class="w-5 h-5 rounded bg-slate-100 text-slate-600 flex items-center justify-center text-[10px] font-bold">6</span> Sistem & Baterai</span>
+          <span id="badge-system" class="w-2.5 h-2.5 rounded-full bg-slate-300"></span>
+        </button>
+
+        <button onclick="bukaModul('physical')" id="step-physical" class="step-btn w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-semibold transition text-left">
+          <span class="flex items-center gap-2"><span class="w-5 h-5 rounded bg-slate-100 text-slate-600 flex items-center justify-center text-[10px] font-bold">7</span> Fisik & Port</span>
+          <span id="badge-physical" class="w-2.5 h-2.5 rounded-full bg-slate-300"></span>
+        </button>
+
+        <div class="border-t border-slate-100 my-2 pt-2">
+          <button onclick="bukaModul('report')" id="step-report" class="step-btn w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-bold text-blue-700 bg-blue-50 hover:bg-blue-100 transition text-left">
+            <span class="flex items-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+              Laporan Hasil Audit
+            </span>
+          </button>
+        </div>
+
+        <div class="px-3 pt-3 pb-1 border-t border-slate-100 text-[10px] text-slate-400 flex flex-wrap gap-3">
+          <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-slate-300"></span> Belum</span>
+          <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> Normal</span>
+          <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-rose-500"></span> Kendala</span>
+        </div>
+      </aside>
+
+      <!-- AREA PANEL AKTIF -->
+      <section class="flex-1 w-full">
+
+        <!-- 1. MODUL DISPLAY -->
+        <div id="panel-display" class="module-panel bg-white rounded-xl border border-slate-200 shadow-sm p-6 space-y-6">
+          <div class="border-b pb-4">
+            <h2 class="text-lg font-bold text-slate-900">1. Pengujian Layar & Dead Pixel</h2>
+            <p class="text-xs text-slate-500 mt-1">Deteksi piksel mati, bercak putih (white spot), atau kebocoran cahaya (backlight bleed) menggunakan mode layar penuh.</p>
+          </div>
+          <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div class="space-y-1">
+                <h3 class="text-sm font-bold text-slate-800">Uji Warna Solid Layar Penuh</h3>
+                <p class="text-xs text-slate-500">Klik area warna saat mode penuh aktif untuk berpindah warna. Tekan ESC untuk keluar.</p>
+              </div>
+              <button onclick="mulaiUjiLayar()" class="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold rounded-lg shadow-sm transition shrink-0">Masuk Layar Penuh</button>
+            </div>
+            <div class="grid grid-cols-6 gap-2 pt-2">
+              <button onclick="mulaiUjiLayar(0)" class="h-10 rounded-lg bg-black border border-slate-300 hover:scale-105 transition" title="Hitam"></button>
+              <button onclick="mulaiUjiLayar(1)" class="h-10 rounded-lg bg-white border border-slate-300 hover:scale-105 transition" title="Putih"></button>
+              <button onclick="mulaiUjiLayar(2)" class="h-10 rounded-lg bg-red-600 border border-slate-300 hover:scale-105 transition" title="Merah"></button>
+              <button onclick="mulaiUjiLayar(3)" class="h-10 rounded-lg bg-green-600 border border-slate-300 hover:scale-105 transition" title="Hijau"></button>
+              <button onclick="mulaiUjiLayar(4)" class="h-10 rounded-lg bg-blue-600 border border-slate-300 hover:scale-105 transition" title="Biru"></button>
+              <button onclick="mulaiUjiLayar(5)" class="h-10 rounded-lg bg-neutral-500 border border-slate-300 hover:scale-105 transition" title="Abu-abu"></button>
+            </div>
+          </div>
+          <div class="pt-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50/70 p-4 rounded-xl">
+            <div class="flex-1">
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Catatan Kondisi Layar (Opsional)</label>
+              <input type="text" id="note-display" placeholder="Contoh: Terdapat 1 white spot samar di sudut kiri..." class="w-full text-xs px-3 py-2 bg-white border border-slate-300 rounded-lg focus:outline-none focus:border-blue-600">
+            </div>
+            <div class="flex items-center gap-2 shrink-0 self-end">
+              <button onclick="tetapkanStatus('display', 'fail', 'keyboard')" class="px-4 py-2 text-xs font-semibold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-lg transition">✕ Ada Cacat</button>
+              <button onclick="tetapkanStatus('display', 'pass', 'keyboard')" class="px-4 py-2 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-sm transition">✓ Layar Normal</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. MODUL KEYBOARD -->
+        <div id="panel-keyboard" class="module-panel hidden bg-white rounded-xl border border-slate-200 shadow-sm p-6 space-y-5">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b pb-4">
+            <div>
+              <h2 class="text-lg font-bold text-slate-900">2. Pengujian Matriks Keyboard</h2>
+              <p class="text-xs text-slate-500 mt-1">Tekan tombol fisik pada keyboard. Tombol yang berfungsi akan menyala hijau dan terhitung otomatis.</p>
+            </div>
+            <button onclick="resetKeyboardTest()" class="self-start text-xs font-semibold text-slate-600 hover:text-slate-900 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg transition">Reset Matriks</button>
+          </div>
+          <div class="grid grid-cols-3 gap-3 text-center">
+            <div class="bg-slate-50 p-3 rounded-lg border border-slate-200">
+              <span class="text-[10px] font-semibold text-slate-400 uppercase block">Tombol Terakhir</span>
+              <span id="kb-last-key" class="text-sm font-bold font-mono-tech text-slate-900 mt-0.5 block">-</span>
+            </div>
+            <div class="bg-slate-50 p-3 rounded-lg border border-slate-200">
+              <span class="text-[10px] font-semibold text-slate-400 uppercase block">Kode Input</span>
+              <span id="kb-last-code" class="text-sm font-bold font-mono-tech text-blue-600 mt-0.5 block">-</span>
+            </div>
+            <div class="bg-slate-50 p-3 rounded-lg border border-slate-200">
+              <span class="text-[10px] font-semibold text-slate-400 uppercase block">Tombol Terverifikasi</span>
+              <span id="kb-tested-count" class="text-sm font-bold font-mono-tech text-emerald-600 mt-0.5 block">0</span>
+            </div>
+          </div>
+          <div class="bg-slate-900 p-3 sm:p-4 rounded-xl overflow-x-auto">
+            <div id="keyboard-layout" class="min-w-[640px] space-y-1.5 select-none"></div>
+          </div>
+          <div class="pt-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50/70 p-4 rounded-xl">
+            <div class="flex-1">
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Catatan Keyboard (Opsional)</label>
+              <input type="text" id="note-keyboard" placeholder="Contoh: Tombol huruf 'E' harus ditekan keras..." class="w-full text-xs px-3 py-2 bg-white border border-slate-300 rounded-lg focus:outline-none focus:border-blue-600">
+            </div>
+            <div class="flex items-center gap-2 shrink-0 self-end">
+              <button onclick="tetapkanStatus('keyboard', 'fail', 'pointer')" class="px-4 py-2 text-xs font-semibold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-lg transition">✕ Ada Tombol Mati</button>
+              <button onclick="tetapkanStatus('keyboard', 'pass', 'pointer')" class="px-4 py-2 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-sm transition">✓ Semua Normal</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. MODUL MOUSE, TOUCHPAD & SCROLL (BARU) -->
+        <div id="panel-pointer" class="module-panel hidden bg-white rounded-xl border border-slate-200 shadow-sm p-6 space-y-5">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b pb-4">
+            <div>
+              <h2 class="text-lg font-bold text-slate-900">3. Pengujian Mouse, Touchpad & Scroll</h2>
+              <p class="text-xs text-slate-500 mt-1">Uji respons tombol klik, putaran roda gulir (*scroll*), dan kelancaran pergerakan sensor touchpad tanpa *jitter*.</p>
+            </div>
+            <button onclick="resetPointerTest()" class="self-start text-xs font-semibold text-slate-600 hover:text-slate-900 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg transition">Reset Uji</button>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <!-- Area Uji Klik & Scroll -->
+            <div class="space-y-2.5">
+            <div id="pointer-click-zone" oncontextmenu="return false;" class="h-36 bg-slate-900 text-white rounded-xl flex flex-col items-center justify-center p-4 text-center cursor-crosshair select-none border-2 border-slate-800 hover:border-blue-500 transition relative">
+              <span class="text-[10px] font-bold text-blue-400 uppercase tracking-wider mb-1">Zona Uji Klik & Scroll</span>
+              <p class="text-[11px] text-slate-300 max-w-xs">Lakukan Klik Kiri, Tengah, Kanan, atau putar roda Scroll ke atas dan ke bawah di area ini.</p>
+              <div id="ptr-live-feedback" class="mt-2.5 px-3 py-1 rounded-full bg-white/10 text-[11px] font-mono-tech font-bold text-slate-300">
+                Menunggu input...
+              </div>
+            </div>
+
+            <!-- Baris 1: Tombol Klik (Kiri, Tengah, Kanan) -->
+            <div class="grid grid-cols-3 gap-2 text-center text-[11px]">
+              <div id="ptr-stat-left" class="p-2 rounded-lg bg-slate-50 border border-slate-200 transition">
+                <span class="block text-slate-400">Klik Kiri</span>
+                <strong class="font-mono-tech text-slate-800 text-xs">0</strong>
+              </div>
+              <div id="ptr-stat-mid" class="p-2 rounded-lg bg-slate-50 border border-slate-200 transition">
+                <span class="block text-slate-400">Klik Tengah</span>
+                <strong class="font-mono-tech text-slate-800 text-xs">0</strong>
+              </div>
+              <div id="ptr-stat-right" class="p-2 rounded-lg bg-slate-50 border border-slate-200 transition">
+                <span class="block text-slate-400">Klik Kanan</span>
+                <strong class="font-mono-tech text-slate-800 text-xs">0</strong>
+              </div>
+            </div>
+
+            <!-- Baris 2: Segmentasi Scroll Atas vs Scroll Bawah -->
+            <div class="grid grid-cols-2 gap-2 text-center text-[11px]">
+              <div id="ptr-stat-scroll-up" class="p-2 rounded-lg bg-slate-50 border border-slate-200 flex items-center justify-between px-3 transition">
+                <span class="text-slate-500 font-medium">&uarr; Scroll Atas</span>
+                <strong class="font-mono-tech text-slate-800 text-xs">0</strong>
+              </div>
+              <div id="ptr-stat-scroll-down" class="p-2 rounded-lg bg-slate-50 border border-slate-200 flex items-center justify-between px-3 transition">
+                <span class="text-slate-500 font-medium">&darr; Scroll Bawah</span>
+                <strong class="font-mono-tech text-slate-800 text-xs">0</strong>
+              </div>
+            </div>
+          </div>
+
+            <!-- Kanvas Uji Kelancaran Kursor / Touchpad -->
+            <div class="space-y-2">
+              <div class="flex justify-between items-center text-xs">
+                <span class="font-bold text-slate-700">Kanvas Test</span>
+                <span class="text-[11px] text-slate-400">Tahan klik & geser di kotak</span>
+              </div>
+              <canvas id="pointer-canvas" class="w-full h-44 bg-slate-50 border border-slate-300 rounded-xl cursor-crosshair touch-none"></canvas>
+            </div>
+          </div>
+
+          <div class="pt-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50/70 p-4 rounded-xl">
+            <div class="flex-1">
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Catatan Mouse/Touchpad (Opsional)</label>
+              <input type="text" id="note-pointer" placeholder="Contoh: Klik kanan touchpad agak keras, scroll lancar..." class="w-full text-xs px-3 py-2 bg-white border border-slate-300 rounded-lg focus:outline-none focus:border-blue-600">
+            </div>
+            <div class="flex items-center gap-2 shrink-0 self-end">
+              <button onclick="tetapkanStatus('pointer', 'fail', 'audio')" class="px-4 py-2 text-xs font-semibold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-lg transition">✕ Bermasalah</button>
+              <button onclick="tetapkanStatus('pointer', 'pass', 'audio')" class="px-4 py-2 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-sm transition">✓ Pointer Normal</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. MODUL AUDIO & MIC -->
+        <div id="panel-audio" class="module-panel hidden bg-white rounded-xl border border-slate-200 shadow-sm p-6 space-y-6">
+          <div class="border-b pb-4">
+            <h2 class="text-lg font-bold text-slate-900">4. Pengujian Speaker Stereo & Mikrofon</h2>
+            <p class="text-xs text-slate-500 mt-1">Uji keseimbangan saluran audio kiri/kanan dan sensitivitas tangkapan mikrofon secara langsung.</p>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 space-y-4">
+              <div>
+                <h3 class="text-sm font-bold text-slate-800">Uji Saluran Speaker</h3>
+                <p class="text-xs text-slate-500 mt-0.5">Tekan tombol untuk mengirim nada uji ke saluran terpisah.</p>
+              </div>
+              <div class="grid grid-cols-3 gap-2">
+                <button onclick="putarNadaUji(-1, 'Kiri')" class="p-3 bg-white hover:bg-blue-50 border border-slate-300 hover:border-blue-500 rounded-lg text-xs font-semibold text-slate-800 transition flex flex-col items-center gap-1">
+                  <span class="text-blue-600 font-bold">L</span><span>Uji Kiri</span>
+                </button>
+                <button onclick="putarNadaUji(0, 'Stereo')" class="p-3 bg-white hover:bg-blue-50 border border-slate-300 hover:border-blue-500 rounded-lg text-xs font-semibold text-slate-800 transition flex flex-col items-center gap-1">
+                  <span class="text-blue-600 font-bold">L + R</span><span>Stereo</span>
+                </button>
+                <button onclick="putarNadaUji(1, 'Kanan')" class="p-3 bg-white hover:bg-blue-50 border border-slate-300 hover:border-blue-500 rounded-lg text-xs font-semibold text-slate-800 transition flex flex-col items-center gap-1">
+                  <span class="text-blue-600 font-bold">R</span><span>Uji Kanan</span>
+                </button>
+              </div>
+              <div id="audio-status-label" class="text-[11px] font-mono-tech text-slate-500 bg-white px-3 py-2 rounded-lg border border-slate-200 text-center">Status: Siap menguji keluaran audio</div>
+            </div>
+
+            <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 space-y-4">
+              <div class="flex justify-between items-start">
+                <div>
+                  <h3 class="text-sm font-bold text-slate-800">Uji Input Mikrofon</h3>
+                  <p class="text-xs text-slate-500 mt-0.5">Pantau bar respons saat Anda berbicara.</p>
+                </div>
+                <button id="btn-toggle-mic" onclick="toggleMikrofon()" class="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold rounded-lg transition">Aktifkan Mic</button>
+              </div>
+              <div id="mic-error-box" class="hidden p-3 bg-rose-50 border border-rose-200 rounded-lg text-[11px] text-rose-700"></div>
+              <div class="space-y-2 pt-1">
+                <div class="flex justify-between text-[11px] font-semibold text-slate-600">
+                  <span>Tingkat Sinyal Masuk</span>
+                  <span id="mic-db-value" class="font-mono-tech">0%</span>
+                </div>
+                <div class="w-full h-4 bg-slate-200 rounded-full overflow-hidden p-0.5">
+                  <div id="mic-level-bar" class="h-full bg-emerald-500 rounded-full transition-all duration-75" style="width: 0%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="pt-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50/70 p-4 rounded-xl">
+            <div class="flex-1">
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Catatan Audio & Mic (Opsional)</label>
+              <input type="text" id="note-audio" placeholder="Contoh: Speaker kanan sedikit sember..." class="w-full text-xs px-3 py-2 bg-white border border-slate-300 rounded-lg focus:outline-none focus:border-blue-600">
+            </div>
+            <div class="flex items-center gap-2 shrink-0 self-end">
+              <button onclick="tetapkanStatus('audio', 'fail', 'camera')" class="px-4 py-2 text-xs font-semibold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-lg transition">✕ Bermasalah</button>
+              <button onclick="tetapkanStatus('audio', 'pass', 'camera')" class="px-4 py-2 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-sm transition">✓ Audio Normal</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. MODUL WEBCAM -->
+        <div id="panel-camera" class="module-panel hidden bg-white rounded-xl border border-slate-200 shadow-sm p-6 space-y-5">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b pb-4">
+            <div>
+              <h2 class="text-lg font-bold text-slate-900">5. Pengujian Kamera (Webcam)</h2>
+              <p class="text-xs text-slate-500 mt-1">Verifikasi kejernihan sensor kamera dan deteksi resolusi bawaan perangkat.</p>
+            </div>
+            <button id="btn-toggle-cam" onclick="toggleKamera()" class="self-start px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold rounded-lg transition">Aktifkan Kamera</button>
+          </div>
+          <div id="cam-error-box" class="hidden p-3 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-700"></div>
+          <div class="bg-slate-900 rounded-xl overflow-hidden aspect-video max-h-80 flex items-center justify-center relative border border-slate-800">
+            <video id="webcam-video" autoplay playsinline class="w-full h-full object-contain hidden"></video>
+            <div id="cam-placeholder" class="text-center text-slate-400 text-xs space-y-2 p-6">
+              <svg class="w-10 h-10 mx-auto text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+              <p>Kamera nonaktif demi privasi. Klik "Aktifkan Kamera" untuk mulai menguji.</p>
+            </div>
+            <span id="cam-resolution-badge" class="hidden absolute bottom-3 right-3 bg-black/70 text-emerald-400 font-mono-tech text-[11px] px-2.5 py-1 rounded-md border border-white/10">0 x 0</span>
+          </div>
+          <div class="pt-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50/70 p-4 rounded-xl">
+            <div class="flex-1">
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Catatan Kamera (Opsional)</label>
+              <input type="text" id="note-camera" placeholder="Contoh: Lensa agak buram..." class="w-full text-xs px-3 py-2 bg-white border border-slate-300 rounded-lg focus:outline-none focus:border-blue-600">
+            </div>
+            <div class="flex items-center gap-2 shrink-0 self-end">
+              <button onclick="tetapkanStatus('camera', 'fail', 'system')" class="px-4 py-2 text-xs font-semibold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-lg transition">✕ Bermasalah</button>
+              <button onclick="tetapkanStatus('camera', 'pass', 'system')" class="px-4 py-2 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-sm transition">✓ Kamera Normal</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 6. MODUL INFO SISTEM & BATERAI (BARU) -->
+        <div id="panel-system" class="module-panel hidden bg-white rounded-xl border border-slate-200 shadow-sm p-6 space-y-5">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b pb-4">
+            <div>
+              <h2 class="text-lg font-bold text-slate-900">6. Telemetri Sistem & Kondisi Baterai</h2>
+              <p class="text-xs text-slate-500 mt-1">Pembacaan otomatis spesifikasi perangkat keras dan status daya baterai yang dilaporkan oleh peramban.</p>
+            </div>
+            <button onclick="muatDataSistem()" class="self-start text-xs font-semibold text-blue-600 hover:bg-blue-50 px-3 py-1.5 bg-blue-50/50 border border-blue-200 rounded-lg transition">Muat Ulang Data</button>
+          </div>
+
+          <!-- GANTI GRID DI DALAM #panel-system DENGAN INI -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-xs">
+            <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-1">
+              <span class="text-[10px] font-bold text-slate-400 uppercase">Sistem Operasi & Arsitektur</span>
+              <strong id="sys-platform" class="block text-xs font-mono-tech text-slate-900">-</strong>
+              <span id="sys-arch" class="block text-[10px] text-slate-500">Arsitektur: -</span>
+            </div>
+            <!-- Kotak Prosesor (Ganti kotak prosesor lama dengan ini) -->
+            <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-1.5">
+              <span class="text-[10px] font-bold text-slate-400 uppercase">Prosesor (CPU)</span>
+              <strong id="sys-cpu" class="block text-xs font-mono-tech text-slate-900">-</strong>
+              <input type="text" id="input-cpu-manual" placeholder="Tulis seri CPU opsional (mis. i5-7300HQ)" 
+                    class="w-full text-[11px] px-2 py-1 bg-white border border-slate-200 rounded text-slate-700 focus:border-blue-500 focus:outline-none"
+                    title="Browser memblokir nama seri CPU demi privasi; isi manual jika ingin dicantumkan di laporan">
+            </div>
+
+            <!-- Kotak GPU (Ganti kotak GPU lama dengan ini) -->
+            <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-1">
+              <span class="text-[10px] font-bold text-slate-400 uppercase">GPU / Graphics Adapter</span>
+              <strong id="sys-gpu" class="block text-xs font-mono-tech text-blue-700 break-words">-</strong>
+            </div>
+            <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-1">
+              <span class="text-[10px] font-bold text-slate-400 uppercase">Panel Layar & Refresh Rate</span>
+              <strong id="sys-screen" class="block text-xs font-mono-tech text-slate-900">-</strong>
+              <span id="sys-hz" class="block text-[10px] text-emerald-600 font-semibold">Mengukur Hz...</span>
+            </div>
+            <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-1">
+              <span class="text-[10px] font-bold text-slate-400 uppercase">Status Baterai & Daya</span>
+              <strong id="sys-battery" class="block text-xs font-mono-tech text-slate-900">Memeriksa...</strong>
+              <span id="sys-battery-time" class="block text-[10px] text-slate-500">-</span>
+            </div>
+            <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-1">
+              <span class="text-[10px] font-bold text-slate-400 uppercase">Jaringan, Storage & I/O</span>
+              <strong id="sys-network" class="block text-xs font-mono-tech text-slate-900">-</strong>
+              <span id="sys-io-count" class="block text-[10px] text-slate-500">-</span>
+            </div>
+          </div>
+
+          <div class="bg-blue-50/70 border border-blue-200 rounded-xl p-4 text-xs space-y-1">
+            <span class="font-bold text-blue-900 block">Panduan Cek Battery Health Mendalam (Opsional):</span>
+            <p class="text-blue-800">Untuk melihat kapasitas keausan sel baterai secara mendetail pada Windows, jalankan perintah <code class="font-mono-tech bg-white px-1.5 py-0.5 rounded border border-blue-200">powercfg /batteryreport</code> melalui Command Prompt.</p>
+          </div>
+
+          <div class="pt-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50/70 p-4 rounded-xl">
+            <div class="flex-1">
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Catatan Spesifikasi / Baterai (Opsional)</label>
+              <input type="text" id="note-system" placeholder="Contoh: Baterai mengisi normal, wear level 18%..." class="w-full text-xs px-3 py-2 bg-white border border-slate-300 rounded-lg focus:outline-none focus:border-blue-600">
+            </div>
+            <div class="flex items-center gap-2 shrink-0 self-end">
+              <button onclick="tetapkanStatus('system', 'fail', 'physical')" class="px-4 py-2 text-xs font-semibold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-lg transition">✕ Bermasalah</button>
+              <button onclick="tetapkanStatus('system', 'pass', 'physical')" class="px-4 py-2 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-sm transition">✓ Sesuai & Normal</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 7. MODUL INSPEKSI FISIK & PORT -->
+        <div id="panel-physical" class="module-panel hidden bg-white rounded-xl border border-slate-200 shadow-sm p-6 space-y-6">
+          <div class="border-b pb-4">
+            <h2 class="text-lg font-bold text-slate-900">7. Inspeksi Fisik, Engsel, & Port Konektivitas</h2>
+            <p class="text-xs text-slate-500 mt-1">Periksa komponen perangkat keras yang tidak dapat dideteksi otomatis oleh peramban.</p>
+          </div>
+          <div id="physical-checklist-items" class="space-y-2.5 text-xs"></div>
+          <div class="flex gap-2 pt-2">
+            <input type="text" id="input-physical-custom" placeholder="Tambah poin pemeriksaan lain (misal: Slot SD Card, Lampu Backlight)..." 
+                   class="flex-1 text-xs px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg focus:bg-white focus:border-blue-600 focus:outline-none">
+            <button onclick="tambahPoinFisik()" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-semibold rounded-lg transition">+ Tambah Poin</button>
+          </div>
+          <div class="pt-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50/70 p-4 rounded-xl">
+            <div class="flex-1">
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Kesimpulan Catatan Fisik (Opsional)</label>
+              <input type="text" id="note-physical" placeholder="Contoh: Lecet pemakaian wajar di tutup atas, engsel kokoh..." class="w-full text-xs px-3 py-2 bg-white border border-slate-300 rounded-lg focus:outline-none focus:border-blue-600">
+            </div>
+            <div class="flex items-center gap-2 shrink-0 self-end">
+              <button onclick="selesaikanInspeksiFisik()" class="px-5 py-2.5 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm transition">Lihat Laporan Akhir &rarr;</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- PANEL LAPORAN HASIL AUDIT (UNTUK AUDIT AKTIF MAUPUN ARSIP RIWAYAT) -->
+        <div id="panel-report" class="module-panel hidden bg-white rounded-xl border border-slate-200 shadow-sm p-6 sm:p-8 space-y-6">
+          
+          <!-- Banner Mode Arsip (Muncul hanya jika membuka dari Riwayat) -->
+          <div id="rep-archive-banner" class="hidden no-print bg-blue-50 border border-blue-200 rounded-xl p-3 flex items-center justify-between text-xs">
+            <span class="font-semibold text-blue-900">Mode Arsip: Anda sedang melihat rincian laporan tersimpan (<span id="rep-archive-id" class="font-mono-tech"></span>)</span>
+            <button onclick="gantiTampilanUtama('history')" class="font-bold text-blue-700 hover:underline">&larr; Kembali ke Riwayat</button>
+          </div>
+
+          <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4 border-b border-slate-200 pb-5">
+            <div class="space-y-1.5">
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="text-[11px] font-mono-tech font-bold uppercase tracking-wider text-blue-600">LAPORAN HASIL INSPEKSI</span>
+                <span id="rep-label-badge" class="text-[11px] font-semibold bg-slate-100 text-slate-700 border border-slate-200 px-2.5 py-0.5 rounded-full">Label</span>
+              </div>
+              <h2 class="text-xl font-bold text-slate-900" id="rep-device-name">Perangkat Belum Dinamai</h2>
+              <div class="text-xs text-slate-500 space-x-2">
+                <span id="rep-date">-</span> • <span id="rep-auditor">Auditor: Tamu</span>
+              </div>
+            </div>
+
+            <div class="bg-slate-900 text-white px-5 py-3 rounded-xl text-center shrink-0">
+              <span class="text-[10px] uppercase tracking-wider text-slate-400 block">Skor Kelayakan</span>
+              <span id="rep-score" class="text-2xl font-bold font-mono-tech text-emerald-400">0%</span>
+              <span id="rep-verdict" class="block text-[11px] font-medium text-slate-300 mt-0.5">Belum Lengkap</span>
+            </div>
+          </div>
+
+          <!-- Ringkasan Telemetri Sistem Tersimpan -->
+          <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 text-xs flex flex-wrap gap-x-6 gap-y-2 text-slate-600">
+            <span><strong>OS:</strong> <span id="rep-sys-os" class="font-mono-tech">-</span></span>
+            <span><strong>CPU:</strong> <span id="rep-sys-cpu" class="font-mono-tech">-</span></span>
+            <span><strong>GPU:</strong> <span id="rep-sys-gpu" class="font-mono-tech">-</span></span>
+            <span><strong>Layar:</strong> <span id="rep-sys-screen" class="font-mono-tech">-</span></span>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Rincian 7 Modul Diagnostik</h3>
+            <div id="rep-modules-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs"></div>
+          </div>
+
+          <div class="space-y-2 pt-2 border-t border-slate-100">
+            <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Detail Pemeriksaan Fisik</h3>
+            <div id="rep-physical-list" class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs"></div>
+          </div>
+
+          <div class="no-print pt-5 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3">
+            <div id="rep-left-actions">
+              <button onclick="resetSemuaAudit()" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 border border-slate-300 rounded-lg transition">Mulai Audit Baru</button>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <button onclick="salinTeksLaporan()" class="px-4 py-2 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition">Salin Teks Ringkasan</button>
+              <button onclick="window.print()" class="px-4 py-2 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition">Cetak / Simpan PDF</button>
+              <button id="btn-save-history" onclick="simpanKeRiwayat()" class="px-5 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm transition">Simpan ke Riwayat Akun</button>
+            </div>
+          </div>
+
+        </div>
+
+      </section>
+    </div>
+  </main>
+
+  <!-- ========================================== -->
+  <!-- TAMPILAN 2: RIWAYAT AUDIT TERSIMPAN        -->
+  <!-- ========================================== -->
+  <main id="view-history" class="no-print hidden max-w-5xl mx-auto px-4 py-6 w-full flex-1 space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
+      <div>
+        <h1 class="text-xl font-bold text-slate-900">Riwayat Audit Perangkat</h1>
+        <p class="text-xs text-slate-500 mt-0.5">Arsip hasil pemeriksaan perangkat keras. Klik "Buka Detail" untuk melihat rincian lengkap atau mencetak ulang.</p>
+      </div>
+      <button onclick="gantiTampilanUtama('home')" class="self-start px-4 py-2 bg-slate-900 text-white text-xs font-semibold rounded-lg hover:bg-slate-800 transition">
+        + Audit Perangkat Baru
+      </button>
+    </div>
+
+    <!-- Pencarian Riwayat Berdasarkan Nama Perangkat atau Label -->
+    <div class="relative">
+      <input type="text" id="input-search-history" oninput="renderRiwayatAudit()" placeholder="Cari riwayat berdasarkan nama perangkat atau label (misal: COD, Pasca-Servis, ThinkPad)..." 
+             class="w-full pl-10 pr-4 py-2.5 text-xs bg-white border border-slate-300 rounded-xl focus:border-blue-600 focus:outline-none">
+      <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+    </div>
+
+    <div id="history-list-container" class="space-y-3"></div>
+  </main>
+
+  <!-- ========================================== -->
+  <!-- OVERLAY MODE FULLSCREEN UJI LAYAR          -->
+  <!-- ========================================== -->
+  <div id="fullscreen-display-overlay" onclick="gantiWarnaLayar()" class="fixed inset-0 z-[100] hidden cursor-pointer select-none flex flex-col justify-between p-6">
+    <div class="mx-auto bg-black/75 text-white px-5 py-2.5 rounded-full text-xs font-medium flex items-center gap-4 border border-white/20 shadow-lg backdrop-blur-sm" onclick="event.stopPropagation()">
+      <span id="overlay-color-name" class="font-mono-tech font-bold">HITAM</span>
+      <span class="text-white/40">|</span>
+      <span>Klik area warna untuk ganti • Tekan ESC untuk keluar</span>
+      <button onclick="tutupUjiLayar()" class="bg-white/20 hover:bg-white/30 px-2.5 py-1 rounded-full font-bold transition">Tutup</button>
+    </div>
+  </div>
+
+  <footer class="no-print bg-white border-t border-slate-200 py-5 text-center text-xs text-slate-400 mt-8">
+    Device Audit • Sistem Diagnostik & Verifikasi Perangkat Keras Berbasis Browser
+  </footer>
+
+  <script src="auth.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
